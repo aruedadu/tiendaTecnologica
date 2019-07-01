@@ -30,16 +30,16 @@ public class RepositorioGarantiaPersistente implements RepositorioGarantiaExtend
 	public void agregar(GarantiaExtendida garantia) {
 		GarantiaExtendidaEntity garantiaEntity = buildGarantiaExtendidaEntity(garantia);
 		entityManager.persist(garantiaEntity);
-		
+
 	}
-	
+
 	@Override
 	public Producto obtenerProductoConGarantiaPorCodigo(String codigo) {
-		
+
 		GarantiaExtendidaEntity garantiaEntity = obtenerGarantiaEntityPorCodigo(codigo);
 		return ProductoBuilder.convertirADominio(garantiaEntity != null ? garantiaEntity.getProducto() : null);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private GarantiaExtendidaEntity obtenerGarantiaEntityPorCodigo(String codigo) {
 
@@ -53,27 +53,28 @@ public class RepositorioGarantiaPersistente implements RepositorioGarantiaExtend
 
 	private GarantiaExtendidaEntity buildGarantiaExtendidaEntity(GarantiaExtendida garantia) {
 
-		ProductoEntity productoEntity = repositorioProductoJPA.obtenerProductoEntityPorCodigo(garantia.getProducto().getCodigo());
+		ProductoEntity productoEntity = repositorioProductoJPA
+				.obtenerProductoEntityPorCodigo(garantia.getProducto().getCodigo());
 
 		GarantiaExtendidaEntity garantiaEntity = new GarantiaExtendidaEntity();
 		garantiaEntity.setProducto(productoEntity);
 		garantiaEntity.setFechaSolicitudGarantia(garantia.getFechaSolicitudGarantia());
 
+		garantiaEntity.setFechaFinGarantia(garantia.getFechaFinGarantia());
+		garantiaEntity.setNombreCliente(garantia.getNombreCliente());
+		garantiaEntity.setPrecio(garantia.getPrecioGarantia());
+
 		return garantiaEntity;
 	}
 
-	
 	@Override
 	public GarantiaExtendida obtener(String codigo) {
-		
+
 		GarantiaExtendidaEntity garantiaEntity = obtenerGarantiaEntityPorCodigo(codigo);
 
 		return new GarantiaExtendida(ProductoBuilder.convertirADominio(garantiaEntity.getProducto()),
-				garantiaEntity.getFechaSolicitudGarantia(),garantiaEntity.getFechaFinGarantia(),garantiaEntity.getPrecio(),
-				garantiaEntity.getNombreCliente()
-				);
+				garantiaEntity.getFechaSolicitudGarantia(), garantiaEntity.getFechaFinGarantia(),
+				garantiaEntity.getPrecio(), garantiaEntity.getNombreCliente());
 	}
 
-	
-	
 }
